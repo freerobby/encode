@@ -78,22 +78,11 @@ def solve_double_roads!(city_counts, unsolved_roads, solved_roads)
 end
 p city_counts
 
-
-puts "Solving single city roads..."
-solve_single_city_roads!(city_counts, unsolved_roads, solved_roads)
-
-p unsolved_roads
-p city_counts
-p solved_roads
-puts
-
-puts "Solving double roads..."
-solve_double_roads!(city_counts, unsolved_roads, solved_roads)
-
-p unsolved_roads
-p city_counts
-p solved_roads
-puts
+def prune_city_counts(hash)
+  hash.each do |k,v|
+    hash.delete(k) if v == 0
+  end
+end
 
 index = 0
 while unsolved_roads.count > 0
@@ -103,6 +92,7 @@ while unsolved_roads.count > 0
   solve_single_city_roads!(city_counts, unsolved_roads, solved_roads)
   puts "Solving more double roads... #{index} #{Time.now}"
   solve_double_roads!(city_counts, unsolved_roads, solved_roads)
+  prune_city_counts(city_counts)
 
   p "Unsolved Roads:"
   p unsolved_roads
