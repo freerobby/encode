@@ -1,4 +1,4 @@
-board = File.read('./delivery_map.txt').split("\n").map { |a| a.split(' ').map(&:to_i) }
+board = File.read('./delivery_map (1).txt').split("\n").map { |a| a.split(' ').map(&:to_i) }
 
 puts board.inspect
 
