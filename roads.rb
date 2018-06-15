@@ -14,7 +14,12 @@ p cities
 puts
 
 city_counts = {}
-roads.each do |r|
+
+unsolved_roads = roads.dup
+solved_roads = []
+
+
+unsolved_roads.each do |r|
   if city_counts.has_key?(r[0])
     city_counts[r[0]] += 1
   else
@@ -27,26 +32,18 @@ roads.each do |r|
   end
 end
 
-def get_roads_by_city(city, roads)
-  these_roads = roads.select{|r| r[0] == city}
-  if these_roads.nil?
-    these_roads roads.select{|r| r[1] == city}
-  end
-  these_roads
+def get_roads_by_city(city, unsolved_roads)
+  unsolved_roads.select{|r| r[0] == city || r[1] == city}
 end
 
-def get_road_by_city(city, roads)
-  get_roads_by_city(city, roads)[0]
+def get_road_by_city(city, unsolved_roads)
+  get_roads_by_city(city, unsolved_roads)[0]
 end
-
-unsolved_roads = roads.dup
-solved_roads = []
 
 def solve_single_city_roads!(city_counts, unsolved_roads, solved_roads)
   city_counts.each do |city, count|
     if count == 1
       road = get_road_by_city(city, unsolved_roads)
-      next if road.nil?
       if road[0] == city
         solved_roads << [city, road[1]]
       else
@@ -98,11 +95,20 @@ p city_counts
 p solved_roads
 puts
 
-puts "Solving more roads..."
-solve_single_city_roads!(city_counts, unsolved_roads, solved_roads)
-solve_double_roads!(city_counts, unsolved_roads, solved_roads)
-solve_single_city_roads!(city_counts, unsolved_roads, solved_roads)
-solve_double_roads!(city_counts, unsolved_roads, solved_roads)
+index = 0
+while unsolved_roads.count > 0
+  index += 1
+  puts "Still have #{unsolved_roads.count} unsolved roads."
+  puts "Solving more city roads... #{index} #{Time.now}"
+  solve_single_city_roads!(city_counts, unsolved_roads, solved_roads)
+  puts "Solving more double roads... #{index} #{Time.now}"
+  solve_double_roads!(city_counts, unsolved_roads, solved_roads)
+
+  p "Unsolved Roads:"
+  p unsolved_roads
+  p "City Counts:"
+  p city_counts
+end
 
 p unsolved_roads
 p city_counts
